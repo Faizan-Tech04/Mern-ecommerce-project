@@ -32,15 +32,27 @@ export const searchProducts = createAsyncThunk(
       }
 
       // ==========================================
+      // Get Authentication Token
+      // ==========================================
+
+      const token = localStorage.getItem("token");
+
+      // ==========================================
       // API Request
       // ==========================================
 
       const response = await axios.get(
-        `http://localhost:5000/api/shop/search/${encodeURIComponent(
+        `${import.meta.env.VITE_API_URL}/api/shop/search/${encodeURIComponent(
           trimmedKeyword,
         )}`,
         {
           withCredentials: true,
+
+          headers: {
+            ...(token && {
+              Authorization: `Bearer ${token}`,
+            }),
+          },
         },
       );
 

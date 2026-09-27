@@ -12,11 +12,30 @@ const initialState = {
 };
 
 // ==========================================
+// Helper - Get Auth Header
+// ==========================================
+
+const getAuthConfig = () => {
+  const token = localStorage.getItem("token");
+
+  return {
+    withCredentials: true,
+
+    headers: {
+      ...(token && {
+        Authorization: `Bearer ${token}`,
+      }),
+    },
+  };
+};
+
+// ==========================================
 // Add To Cart
 // ==========================================
 
 export const addToCart = createAsyncThunk(
   "cart/addToCart",
+
   async ({ productId, quantity }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
@@ -25,13 +44,13 @@ export const addToCart = createAsyncThunk(
           productId,
           quantity,
         },
-        {
-          withCredentials: true,
-        },
+        getAuthConfig(),
       );
 
       return response.data;
     } catch (error) {
+      console.error("Add To Cart Error:", error);
+
       return rejectWithValue(
         error.response?.data || {
           success: false,
@@ -48,17 +67,18 @@ export const addToCart = createAsyncThunk(
 
 export const fetchCartItems = createAsyncThunk(
   "cart/fetchCartItems",
+
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/api/shop/cart/get`,
-        {
-          withCredentials: true,
-        },
+        getAuthConfig(),
       );
 
       return response.data;
     } catch (error) {
+      console.error("Fetch Cart Error:", error);
+
       return rejectWithValue(
         error.response?.data || {
           success: false,
@@ -75,6 +95,7 @@ export const fetchCartItems = createAsyncThunk(
 
 export const updateCartItemQty = createAsyncThunk(
   "cart/updateCartItemQty",
+
   async ({ productId, quantity }, { rejectWithValue }) => {
     try {
       const response = await axios.put(
@@ -83,13 +104,13 @@ export const updateCartItemQty = createAsyncThunk(
           productId,
           quantity,
         },
-        {
-          withCredentials: true,
-        },
+        getAuthConfig(),
       );
 
       return response.data;
     } catch (error) {
+      console.error("Update Cart Error:", error);
+
       return rejectWithValue(
         error.response?.data || {
           success: false,
@@ -106,17 +127,18 @@ export const updateCartItemQty = createAsyncThunk(
 
 export const deleteCartItem = createAsyncThunk(
   "cart/deleteCartItem",
+
   async (productId, { rejectWithValue }) => {
     try {
       const response = await axios.delete(
         `${import.meta.env.VITE_API_URL}/api/shop/cart/delete/${productId}`,
-        {
-          withCredentials: true,
-        },
+        getAuthConfig(),
       );
 
       return response.data;
     } catch (error) {
+      console.error("Delete Cart Error:", error);
+
       return rejectWithValue(
         error.response?.data || {
           success: false,
