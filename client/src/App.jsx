@@ -67,9 +67,7 @@ function App() {
     user,
     isAuthenticated,
     isLoading,
-  } = useSelector(
-    (state) => state.auth
-  );
+  } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
 
@@ -93,6 +91,10 @@ function App() {
     );
   }
 
+  // ==========================================
+  // Application Routes
+  // ==========================================
+
   return (
     <div className="flex min-h-screen w-full min-w-0 flex-col overflow-x-hidden bg-white">
       <main className="w-full min-w-0 max-w-full">
@@ -106,10 +108,9 @@ function App() {
             path="/"
             element={
               <CheckAuth
-                isAuthenticated={
-                  isAuthenticated
-                }
+                isAuthenticated={isAuthenticated}
                 user={user}
+                isLoading={isLoading}
               />
             }
           />
@@ -121,10 +122,9 @@ function App() {
           <Route
             element={
               <CheckAuth
-                isAuthenticated={
-                  isAuthenticated
-                }
+                isAuthenticated={isAuthenticated}
                 user={user}
+                isLoading={isLoading}
               />
             }
           >
@@ -151,10 +151,9 @@ function App() {
           <Route
             element={
               <CheckAuth
-                isAuthenticated={
-                  isAuthenticated
-                }
+                isAuthenticated={isAuthenticated}
                 user={user}
+                isLoading={isLoading}
               />
             }
           >
@@ -191,10 +190,9 @@ function App() {
           <Route
             element={
               <CheckAuth
-                isAuthenticated={
-                  isAuthenticated
-                }
+                isAuthenticated={isAuthenticated}
                 user={user}
+                isLoading={isLoading}
               />
             }
           >
@@ -202,35 +200,25 @@ function App() {
               path="/shop"
               element={<ShoppingLayout />}
             >
-              {/* Home */}
-
               <Route
                 path="home"
                 element={<ShoppingHome />}
               />
-
-              {/* Product Listing */}
 
               <Route
                 path="listing"
                 element={<ShoppingListing />}
               />
 
-              {/* Search */}
-
               <Route
                 path="search"
                 element={<SearchPage />}
               />
 
-              {/* Checkout */}
-
               <Route
                 path="checkout"
                 element={<ShoppingCheckout />}
               />
-
-              {/* Account / Orders */}
 
               <Route
                 path="account"

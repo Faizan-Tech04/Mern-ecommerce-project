@@ -7,8 +7,17 @@ import {
 function CheckAuth({
     isAuthenticated,
     user,
+    isLoading,
 }) {
     const location = useLocation();
+
+    // ==========================================
+    // Wait until authentication check completes
+    // ==========================================
+
+    if (isLoading) {
+        return null;
+    }
 
     // ==========================================
     // Root Route
@@ -47,12 +56,8 @@ function CheckAuth({
 
     if (
         !isAuthenticated &&
-        !location.pathname.includes(
-            "/login"
-        ) &&
-        !location.pathname.includes(
-            "/register"
-        )
+        !location.pathname.includes("/login") &&
+        !location.pathname.includes("/register")
     ) {
         return (
             <Navigate
@@ -63,18 +68,15 @@ function CheckAuth({
     }
 
     // ==========================================
-    // User IS authenticated but trying
-    // to access Login/Register
+    // Authenticated user trying Login/Register
     // ==========================================
 
     if (
         isAuthenticated &&
-        (location.pathname.includes(
-            "/login"
-        ) ||
-            location.pathname.includes(
-                "/register"
-            ))
+        (
+            location.pathname.includes("/login") ||
+            location.pathname.includes("/register")
+        )
     ) {
         if (user?.role === "admin") {
             return (
@@ -94,15 +96,13 @@ function CheckAuth({
     }
 
     // ==========================================
-    // Normal User trying to access Admin
+    // Normal User trying Admin
     // ==========================================
 
     if (
         isAuthenticated &&
         user?.role !== "admin" &&
-        location.pathname.includes(
-            "/admin"
-        )
+        location.pathname.includes("/admin")
     ) {
         return (
             <Navigate
@@ -113,15 +113,13 @@ function CheckAuth({
     }
 
     // ==========================================
-    // Admin trying to access Shopping
+    // Admin trying Shopping
     // ==========================================
 
     if (
         isAuthenticated &&
         user?.role === "admin" &&
-        location.pathname.includes(
-            "/shop"
-        )
+        location.pathname.includes("/shop")
     ) {
         return (
             <Navigate
