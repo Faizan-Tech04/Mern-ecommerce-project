@@ -86,9 +86,18 @@ const createOrder = async (req, res) => {
     // PayPal Return / Cancel URLs
     // ==========================================
 
-    const returnUrl = "http://localhost:5173/shop/paypal-return";
+    const clientBaseUrl = process.env.CLIENT_BASE_URL?.replace(/\/$/, "");
 
-    const cancelUrl = "http://localhost:5173/shop/paypal-cancel";
+    if (!clientBaseUrl) {
+      return res.status(500).json({
+        success: false,
+        message: "CLIENT_BASE_URL is not configured",
+      });
+    }
+
+    const returnUrl = `${clientBaseUrl}/shop/paypal-return`;
+
+    const cancelUrl = `${clientBaseUrl}/shop/paypal-cancel`;
 
     // ==========================================
     // Create PayPal Order

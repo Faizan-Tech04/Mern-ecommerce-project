@@ -29,7 +29,7 @@ export const getReviews = createAsyncThunk(
       }
 
       const response = await axios.get(
-        `http://localhost:5000/api/shop/review/${productId}`,
+        `${import.meta.env.VITE_API_URL}/api/shop/review/${productId}`,
         {
           withCredentials: true,
         },
@@ -67,7 +67,7 @@ export const addReview = createAsyncThunk(
       }
 
       const response = await axios.post(
-        "http://localhost:5000/api/shop/review/add",
+        `${import.meta.env.VITE_API_URL}/api/shop/review/add`,
         {
           productId,
           rating,

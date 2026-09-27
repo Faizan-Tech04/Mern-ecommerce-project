@@ -24,7 +24,7 @@ export const getFeatures = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/common/feature/get",
+        `${import.meta.env.VITE_API_URL}/api/common/feature/get`,
         {
           withCredentials: true,
         },
@@ -65,7 +65,7 @@ export const addFeature = createAsyncThunk(
       }
 
       const response = await axios.post(
-        "http://localhost:5000/api/common/feature/add",
+        `${import.meta.env.VITE_API_URL}/api/common/feature/add`,
         {
           image: image.trim(),
           title: title.trim(),
@@ -101,7 +101,7 @@ export const updateFeature = createAsyncThunk(
       }
 
       const response = await axios.put(
-        `http://localhost:5000/api/common/feature/update/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/common/feature/update/${id}`,
         {
           image,
           title,
@@ -137,7 +137,7 @@ export const deleteFeature = createAsyncThunk(
       }
 
       const response = await axios.delete(
-        `http://localhost:5000/api/common/feature/delete/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/common/feature/delete/${id}`,
         {
           withCredentials: true,
         },

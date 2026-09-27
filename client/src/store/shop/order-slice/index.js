@@ -26,7 +26,7 @@ export const createOrder = createAsyncThunk(
   async (orderData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/shop/order/create",
+        `${import.meta.env.VITE_API_URL}/api/shop/order/create`,
         orderData,
         {
           withCredentials: true,
@@ -56,7 +56,7 @@ export const capturePayment = createAsyncThunk(
   async (orderId, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/shop/order/capture",
+        `${import.meta.env.VITE_API_URL}/api/shop/order/capture`,
         {
           orderId,
         },
@@ -88,7 +88,7 @@ export const getAllOrdersByUser = createAsyncThunk(
   async (userId, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/shop/order/list/${userId}`,
+        `${import.meta.env.VITE_API_URL}/api/shop/order/list/${userId}`,
         {
           withCredentials: true,
         },
@@ -117,7 +117,7 @@ export const getOrderDetails = createAsyncThunk(
   async (orderId, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/shop/order/details/${orderId}`,
+        `${import.meta.env.VITE_API_URL}/api/shop/order/details/${orderId}`,
         {
           withCredentials: true,
         },

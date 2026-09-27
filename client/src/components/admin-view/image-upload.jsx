@@ -86,7 +86,7 @@ function ProductImageUpload({
             data.append("my_file", imageFile);
 
             const response = await axios.post(
-                "http://localhost:5000/api/admin/products/upload-image",
+                `${import.meta.env.VITE_API_URL}/api/admin/products/upload-image`,
                 data
             );
 
@@ -172,8 +172,8 @@ function ProductImageUpload({
                     <Label
                         htmlFor="image-upload"
                         className={`flex h-32 flex-col items-center justify-center rounded-md border-2 border-dashed ${isEditMode
-                                ? "cursor-not-allowed"
-                                : "cursor-pointer"
+                            ? "cursor-not-allowed"
+                            : "cursor-pointer"
                             }`}
                     >
                         <UploadCloudIcon className="mb-2 h-10 w-10 text-muted-foreground" />
