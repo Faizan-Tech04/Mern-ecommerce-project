@@ -1,4 +1,4 @@
-import AdminOrdersView from "@/components/admin-view/Orders.jsx";
+import AdminOrdersView from "@/components/admin-view/orders.jsx";
 
 
 // ==========================================
