@@ -2,6 +2,14 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
+// ================= COOKIE OPTIONS =================
+
+const cookieOptions = {
+  httpOnly: true,
+  secure: true,
+  sameSite: "none",
+};
+
 // ================= REGISTER =================
 
 const registerUser = async (req, res) => {
@@ -99,11 +107,10 @@ const loginUser = async (req, res) => {
     );
 
     // Store token in cookie
-    res
+    return res
       .cookie("token", token, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "lax",
+        ...cookieOptions,
+        maxAge: 60 * 60 * 1000,
       })
       .status(200)
       .json({
@@ -129,11 +136,9 @@ const loginUser = async (req, res) => {
 // ================= LOGOUT =================
 
 const logout = (req, res) => {
-  res
+  return res
     .clearCookie("token", {
-      httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      ...cookieOptions,
     })
     .status(200)
     .json({

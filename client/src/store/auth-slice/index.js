@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-
 import axios from "axios";
 
 // ==========================================
@@ -156,7 +155,6 @@ const authSlice = createSlice({
   reducers: {
     setUser: (state, action) => {
       state.user = action.payload;
-
       state.isAuthenticated = !!action.payload;
     },
   },
@@ -173,17 +171,13 @@ const authSlice = createSlice({
 
       .addCase(registerUser.fulfilled, (state) => {
         state.isLoading = false;
-
         state.user = null;
-
         state.isAuthenticated = false;
       })
 
       .addCase(registerUser.rejected, (state) => {
         state.isLoading = false;
-
         state.user = null;
-
         state.isAuthenticated = false;
       });
 
@@ -201,20 +195,16 @@ const authSlice = createSlice({
 
         if (action.payload?.success) {
           state.user = action.payload.user;
-
           state.isAuthenticated = true;
         } else {
           state.user = null;
-
           state.isAuthenticated = false;
         }
       })
 
       .addCase(loginUser.rejected, (state) => {
         state.isLoading = false;
-
         state.user = null;
-
         state.isAuthenticated = false;
       });
 
@@ -229,17 +219,13 @@ const authSlice = createSlice({
 
       .addCase(logoutUser.fulfilled, (state) => {
         state.isLoading = false;
-
         state.user = null;
-
         state.isAuthenticated = false;
       })
 
       .addCase(logoutUser.rejected, (state) => {
         state.isLoading = false;
-
         state.user = null;
-
         state.isAuthenticated = false;
       });
 
@@ -257,20 +243,16 @@ const authSlice = createSlice({
 
         if (action.payload?.success) {
           state.user = action.payload.user;
-
           state.isAuthenticated = true;
         } else {
           state.user = null;
-
           state.isAuthenticated = false;
         }
       })
 
       .addCase(checkAuth.rejected, (state) => {
         state.isLoading = false;
-
         state.user = null;
-
         state.isAuthenticated = false;
       });
   },
