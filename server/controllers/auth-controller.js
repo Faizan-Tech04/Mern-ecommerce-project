@@ -8,6 +8,7 @@ const cookieOptions = {
   httpOnly: true,
   secure: true,
   sameSite: "none",
+  maxAge: 60 * 60 * 1000, // 60 minutes
 };
 
 // ================= REGISTER =================
@@ -18,7 +19,6 @@ const registerUser = async (req, res) => {
   const { userName, email, password } = req.body;
 
   try {
-    // Check required fields
     if (!userName || !email || !password) {
       return res.status(400).json({
         success: false,
@@ -26,7 +26,6 @@ const registerUser = async (req, res) => {
       });
     }
 
-    // Check existing user
     const checkUser = await User.findOne({ email });
 
     if (checkUser) {
@@ -36,17 +35,14 @@ const registerUser = async (req, res) => {
       });
     }
 
-    // Hash password
     const hashPassword = await bcrypt.hash(password, 12);
 
-    // Create new user
     const newUser = new User({
       userName,
       email,
       password: hashPassword,
     });
 
-    // Save user
     await newUser.save();
 
     return res.status(201).json({
@@ -92,7 +88,7 @@ const loginUser = async (req, res) => {
       });
     }
 
-    // Create JWT token
+    // Create JWT
     const token = jwt.sign(
       {
         id: checkUser._id,
@@ -108,14 +104,15 @@ const loginUser = async (req, res) => {
 
     // Store token in cookie
     return res
-      .cookie("token", token, {
-        ...cookieOptions,
-        maxAge: 60 * 60 * 1000,
-      })
+      .cookie("token", token, cookieOptions)
       .status(200)
       .json({
         success: true,
         message: "Logged in successfully",
+
+        // Also send token to frontend
+        token,
+
         user: {
           id: checkUser._id,
           userName: checkUser.userName,
@@ -138,7 +135,9 @@ const loginUser = async (req, res) => {
 const logout = (req, res) => {
   return res
     .clearCookie("token", {
-      ...cookieOptions,
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
     })
     .status(200)
     .json({
@@ -151,8 +150,27 @@ const logout = (req, res) => {
 
 const authMiddleware = async (req, res, next) => {
   try {
-    // Get token from cookie
-    const token = req.cookies.token;
+    /*
+      First try Authorization header:
+
+      Authorization: Bearer <token>
+
+      If it doesn't exist, fallback to cookie.
+    */
+
+    let token = null;
+
+    // Get token from Authorization header
+    const authHeader = req.headers.authorization;
+
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      token = authHeader.split(" ")[1];
+    }
+
+    // Fallback to cookie
+    if (!token && req.cookies?.token) {
+      token = req.cookies.token;
+    }
 
     // No token
     if (!token) {
@@ -165,13 +183,13 @@ const authMiddleware = async (req, res, next) => {
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Store decoded user information in request
+    // Store user information
     req.user = decoded;
 
-    // Continue to next middleware/controller
+    // Continue
     next();
   } catch (e) {
-    console.log("AUTH MIDDLEWARE ERROR:", e);
+    console.log("AUTH MIDDLEWARE ERROR:", e.message);
 
     return res.status(401).json({
       success: false,

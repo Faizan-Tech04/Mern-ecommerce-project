@@ -28,6 +28,9 @@ export const registerUser = createAsyncThunk(
         },
       );
 
+      // Make sure no old token remains
+      localStorage.removeItem("token");
+
       return response.data;
     } catch (error) {
       console.error("Register Error:", error);
@@ -59,6 +62,11 @@ export const loginUser = createAsyncThunk(
         },
       );
 
+      // Save JWT token in localStorage
+      if (response.data?.success && response.data?.token) {
+        localStorage.setItem("token", response.data.token);
+      }
+
       return response.data;
     } catch (error) {
       console.error("Login Error:", error);
@@ -87,12 +95,23 @@ export const logoutUser = createAsyncThunk(
         {},
         {
           withCredentials: true,
+
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+          },
         },
       );
+
+      // Remove JWT from localStorage
+      localStorage.removeItem("token");
 
       return response.data;
     } catch (error) {
       console.error("Logout Error:", error);
+
+      // Even if backend logout fails,
+      // remove local token
+      localStorage.removeItem("token");
 
       return rejectWithValue(
         error.response?.data || {
@@ -113,12 +132,25 @@ export const checkAuth = createAsyncThunk(
 
   async (_, { rejectWithValue }) => {
     try {
+      // Get saved JWT token
+      const token = localStorage.getItem("token");
+
+      // No token means user is not logged in
+      if (!token) {
+        return rejectWithValue({
+          success: false,
+          message: "No authentication token found",
+        });
+      }
+
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/api/auth/check-auth`,
         {
           withCredentials: true,
 
           headers: {
+            Authorization: `Bearer ${token}`,
+
             "Cache-Control":
               "no-store, no-cache, must-revalidate, proxy-revalidate",
 
@@ -132,6 +164,12 @@ export const checkAuth = createAsyncThunk(
       return response.data;
     } catch (error) {
       console.error("Check Auth Error:", error);
+
+      // If token is invalid/expired,
+      // remove it from localStorage
+      if (error.response?.status === 401) {
+        localStorage.removeItem("token");
+      }
 
       return rejectWithValue(
         error.response?.data || {
